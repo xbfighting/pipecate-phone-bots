@@ -1,0 +1,226 @@
+{
+  "name": "Lead Nurturing Agent - Demo (Simplified)",
+  "nodes": [
+    {
+      "name": "introduction",
+      "type": "conversation",
+      "isStart": true,
+      "metadata": {
+        "position": {
+          "x": 50.12670190896438,
+          "y": -329.0651464598686
+        }
+      },
+      "prompt": "[Role]\nYou're Teresa, a patient care coordinator for Clevens Face & Body Specialists. Your primary task is to follow up with patients who inquired about rhinoplasty.\n\n[Context]\nYou're calling a patient who made a rhinoplasty inquiry. Dr. Ross Clevens is double board-certified and has performed over twenty thousand surgeries. The practice offers both surgical and liquid rhinoplasty.\n\n[Response Guidelines]\nBe warm and professional.\nKeep initial contact brief.\nNever mention tools or functions.\nIf not interested, trigger endCall silently.",
+      "model": {
+        "model": "gpt-4o-mini",
+        "provider": "openai",
+        "maxTokens": 250,
+        "temperature": 0.3
+      },
+      "messagePlan": {
+        "firstMessage": "Hi {{customer.name}}, this is Teresa from Dr. Clevens' office. I noticed you inquired about Rhinoplasty but haven't scheduled your consultation yet.    I wanted to check in and see if you're still interested in improving your nose shape or breathing?\" "
+      },
+      "toolIds": []
+    },
+    {
+      "name": "main_conversation",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -611.8144299528326,
+          "y": 175.02154804408167
+        }
+      },
+      "prompt": "[Role]\nYou're Teresa, helping with rhinoplasty questions and booking consultations. Be knowledgeable, patient, never pushy.\n\n[Context]\nKey Information:\n- Surgical: $8,000-$10,000, permanent, 7-10 day recovery\n- Liquid: $1,500+, lasts 2 years, no downtime\n- CareCredit: 0% for 12 months ($667-$833/month surgical)\n- Locations: Melbourne & Merritt Island\n- Virtual consults available\n- Dr. Clevens: Yale/Harvard trained, 20,000+ surgeries\n\n[Response Guidelines]\nAddress ALL concerns mentioned.\nAlways offer both options when discussing cost.\nUse word numbers (eight thousand).\nValidate concerns before solutions.\n\n[Conversation Flow]\n1. Say: \"I completely understand these decisions take time. What's been the main thing holding you back? Is it timing, wanting more information, recovery concerns, or cost?\"\n\n\n2. Based on response:\n\nCOST:\n\"I understand cost is important. Surgical rhinoplasty runs eight thousand to ten thousand dollars, but with CareCredit that's six hundred sixty-seven to eight hundred thirty-three monthly with no interest. We also have Liquid Rhinoplasty starting at fifteen hundred - immediate results, no downtime. Which option sounds more feasible?\"\n\n\nRECOVERY:\n\"For surgical, you'll have a splint for one week and take seven to ten days off work. Dr. Clevens uses techniques that minimize bruising. For liquid rhinoplasty, you return to activities the same day - just ten minutes, no downtime. Which timeline works better for you?\"\n\n\nPROCEDURE INFO:\n\"Surgical permanently reshapes your nose - fixes breathing, removes bumps, straightens. Dr. Clevens' Liquid Rhinoplasty uses fillers for instant results in ten minutes. Many try this first to see how they'll look. Are you looking for permanent or want to try non-surgical first?\"\n\n\nTIMING:\n\"We have flexible scheduling including evenings and weekends at both locations. Also virtual consultations via WhatsApp or FaceTime. What works best - virtual consultation or in-person with computer imaging?\"\n\n\n3. After addressing concerns:\n\nIF READY (positive responses):\n\"Wonderful! Which location - Melbourne or Merritt Island?\"\n\n\"In-person with computer imaging or virtual consultation?\"\n\n\"Morning or afternoon?\"\n\n\"Next Tuesday or Thursday?\"\n\n\"Perfect! Our coordinator will send confirmation. You'll meet Dr. Clevens or Dr. Barbee.\"\n→ hangup_booked\n\nIF NEEDS TIME:\n\"No pressure at all. Would you like information about both options with photos and pricing?\"\n\nIf yes: \"Email or text?\"\n\n\"Should I follow up in two weeks or a month?\"\n\n→ hangup_followup\n\nIF UNCERTAIN after multiple attempts:\n\"I understand this is a big decision. We're here whenever you're ready.\"\n→ hangup_maybe_later\n\n4. Handle partial satisfaction:\nIf \"a little bit\" or uncertain: \"What would be most helpful to explain further?\"\n\n[Return to appropriate section]\n\n[Special Situations]\n\n- Price shock: Immediately mention liquid option and monthly payments\n- Other doctors: \"Many get second opinions. What questions about Dr. Clevens' approach?\"\n- Had rhinoplasty before: \"Dr. Clevens also does revision rhinoplasty. What concerns you about current results?\"\n",
+      "model": {
+        "model": "gpt-4o-mini",
+        "provider": "openai",
+        "maxTokens": 250,
+        "temperature": 0.3
+      },
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [],
+            "type": "string",
+            "title": "main_barrier",
+            "description": "Primary barrier: financial, timing, questions_procedure, questions_recovery, or unsure"
+          },
+          {
+            "type": "string",
+            "title": "specific_concern",
+            "description": "Their specific concern in detail"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": "I completely understand these decisions take time. What's been the main thing holding you back? Is it timing, or wanting more information about the procedures, or concerns about recovery, or cost?"
+      },
+      "toolIds": []
+    },
+    {
+      "name": "hangup",
+      "type": "tool",
+      "metadata": {
+        "position": {
+          "x": 735.3737475653487,
+          "y": 496.8607388846616
+        }
+      },
+      "tool": {
+        "type": "endCall",
+        "function": {
+          "name": "end_call",
+          "parameters": {
+            "type": "object",
+            "required": [],
+            "properties": {}
+          }
+        },
+        "messages": [
+          {
+            "type": "request-start",
+            "content": "Thank you for your time today. Remember, we offer both surgical and non-surgical rhinoplasty options at Clevens Face & Body Specialists. Feel free to visit our website or call us whenever you're ready!",
+            "blocking": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Hangup Booked",
+      "type": "tool",
+      "metadata": {
+        "position": {
+          "x": -916.2796871154673,
+          "y": 899.5557035522606
+        }
+      },
+      "tool": {
+        "type": "endCall",
+        "function": {
+          "name": "untitled_tool",
+          "parameters": {
+            "type": "object",
+            "required": [],
+            "properties": {}
+          }
+        },
+        "messages": [
+          {
+            "type": "request-start",
+            "content": "Excellent! Our coordinator will email your confirmation shortly with directions and what to expect. We look forward to seeing you! Have a wonderful day!",
+            "blocking": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Hangup Follow Up",
+      "type": "tool",
+      "metadata": {
+        "position": {
+          "x": -253.47155963970917,
+          "y": 1129.482020018576
+        }
+      },
+      "tool": {
+        "type": "endCall",
+        "function": {
+          "name": "untitled_tool",
+          "parameters": {
+            "type": "object",
+            "required": [],
+            "properties": {}
+          }
+        },
+        "messages": [
+          {
+            "type": "request-start",
+            "content": "Wonderful! I'll make sure to send you that information right away and follow up with you as discussed. Remember, Dr. Clevens has been specializing in rhinoplasty for over 25 years and we're here to answer any questions. Have a great day!",
+            "blocking": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "Hangup Maybe Later",
+      "type": "tool",
+      "metadata": {
+        "position": {
+          "x": 201.90912095888453,
+          "y": 902.9360096909036
+        }
+      },
+      "tool": {
+        "type": "endCall",
+        "function": {
+          "name": "untitled_tool",
+          "parameters": {
+            "type": "object",
+            "required": [],
+            "properties": {}
+          }
+        },
+        "messages": [
+          {
+            "type": "request-start",
+            "content": "Thank you for your time today. Feel free to reach out whenever you're ready to take the next step. Have a wonderful day!",
+            "blocking": true
+          }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "introduction",
+      "to": "main_conversation",
+      "condition": {
+        "type": "ai",
+        "prompt": "Patient interested but hasn't booked"
+      }
+    },
+    {
+      "from": "introduction",
+      "to": "hangup",
+      "condition": {
+        "type": "ai",
+        "prompt": "Patient says no, not interested, already done, or hostile"
+      }
+    },
+    {
+      "from": "main_conversation",
+      "to": "Hangup Follow Up",
+      "condition": {
+        "type": "ai",
+        "prompt": "Patient wants information sent and/or follow-up scheduled"
+      }
+    },
+    {
+      "from": "main_conversation",
+      "to": "Hangup Booked",
+      "condition": {
+        "type": "ai",
+        "prompt": "Patient provides appointment preferences and confirms booking"
+      }
+    },
+    {
+      "from": "main_conversation",
+      "to": "Hangup Maybe Later",
+      "condition": {
+        "type": "ai",
+        "prompt": "Patient remains uncertain after multiple attempts or conversation is not progressing"
+      }
+    }
+  ],
+  "model": {
+    "model": "gpt-4o-mini",
+    "provider": "openai"
+  },
+  "voice": {
+    "voiceId": "Paige",
+    "provider": "vapi"
+  },
+  "globalPrompt": "Be warm, understanding, and helpful. Never pressure. Focus on understanding their needs and providing thoughtful solutions."
+}
