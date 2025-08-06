@@ -1,11 +1,10 @@
 [project]
-name = "pipecat-server-lead-nurturing-flow"
-version = "0.2.0"
-description = "Client/server web example using Pipecat with conversation flows support"
+name = "pipecat-lead-nurturing-bot"
+version = "1.0.0"
+description = "Lead nurturing bot with Vapi-style workflow implementation"
 requires-python = ">=3.10"
 dependencies = [
     "pipecat-ai[webrtc,silero,deepgram,openai,cartesia,runner]>=0.0.77",
-    "pipecat-ai-flows>=0.0.1",
 ]
 
 [dependency-groups]
